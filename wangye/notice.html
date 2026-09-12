@@ -1,384 +1,767 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公告说明</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding-bottom: 30px;
-        }
-
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 18px;
-            font-weight: bold;
-            color: #ff5000;
-        }
-        
-        /* Header 右侧链接 */
-        .header-links {
-            display: flex;
-            gap: 8px;
-            margin-left: auto;
-        }
-        .header-link {
-            padding: 6px 14px;
-            color: #fff;
-            background: #ff5000;
-            text-decoration: none;
-            font-size: 13px;
-            border-radius: 15px;
-            transition: all 0.3s;
-            white-space: nowrap;
-            font-weight: bold;
-        }
-        .header-link:hover {
-            background: #e04800;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(255, 80, 0, 0.3);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 15px auto;
-            padding: 0 15px;
-        }
-
-        .notice-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .notice-title {
-            font-size: 28px;
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .notice-subtitle {
-            font-size: 20px;
-            color: #1a1a2e;
-            margin-bottom: 18px;
-            padding-left: 12px;
-            border-left: 4px solid #ff5000;
-            font-weight: bold;
-        }
-
-        .notice-content {
-            font-size: 17px;
-            color: #2d2d3a;
-            line-height: 2;
-            margin-bottom: 15px;
-        }
-
-        .advantage-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .advantage-item {
-            display: flex;
-            align-items: flex-start;
-            padding: 15px 18px;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            border-radius: 12px;
-            transition: all 0.3s;
-            border: 1px solid #e9ecef;
-        }
-
-        .advantage-item:hover {
-            background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(255, 80, 0, 0.15);
-            border-color: #ff5000;
-        }
-
-        .advantage-icon {
-            width: 28px;
-            height: 28px;
-            background: linear-gradient(135deg, #ff5000 0%, #ff7744 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 16px;
-            margin-right: 15px;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(255, 80, 0, 0.3);
-        }
-
-        .advantage-text {
-            flex: 1;
-        }
-
-        .advantage-text h4 {
-            font-size: 17px;
-            color: #1a1a2e;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
-
-        .advantage-text p {
-            font-size: 15px;
-            color: #4a4a5a;
-            line-height: 1.7;
-        }
-
-        .back-btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #ff5000 0%, #ff7744 100%);
-            color: #fff;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 16px;
-            transition: all 0.3s;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(255, 80, 0, 0.3);
-        }
-
-        .back-btn:hover {
-            background: linear-gradient(135deg, #e04800 0%, #ff5000 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(255, 80, 0, 0.4);
-        }
-
-        .backup-url {
-            background: linear-gradient(135deg, #fff5f0 0%, #ffe8d6 100%);
-            padding: 18px;
-            border-radius: 12px;
-            text-align: center;
-            margin: 15px 0;
-            border: 1px solid #ff5000;
-        }
-
-        .backup-url a {
-            color: #ff5000;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 17px;
-        }
-
-        .backup-url a:hover {
-            text-decoration: underline;
-        }
-
-        .friend-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .friend-link {
-            padding: 10px 18px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            border-radius: 8px;
-            color: #2d2d3a;
-            text-decoration: none;
-            font-size: 15px;
-            transition: all 0.3s;
-            border: 1px solid #e9ecef;
-            font-weight: 500;
-        }
-
-        .friend-link:hover {
-            background: linear-gradient(135deg, #ff5000 0%, #ff7744 100%);
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 80, 0, 0.3);
-            border-color: #ff5000;
-        }
-
-        .contact-btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #ff5000 0%, #ff7744 100%);
-            color: #fff;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 16px;
-            margin: 5px;
-            transition: all 0.3s;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(255, 80, 0, 0.3);
-        }
-
-        .contact-btn:hover {
-            background: linear-gradient(135deg, #e04800 0%, #ff5000 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(255, 80, 0, 0.4);
-        }
-
-        .contact-btn.qq {
-            background: linear-gradient(135deg, #12b7f5 0%, #36c5f0 100%);
-            box-shadow: 0 4px 12px rgba(18, 183, 245, 0.3);
-        }
-
-        .contact-btn.qq:hover {
-            background: linear-gradient(135deg, #0ea3d9 0%, #12b7f5 100%);
-            box-shadow: 0 6px 16px rgba(18, 183, 245, 0.4);
-        }
-
-        .footer {
-            text-align: center;
-            padding: 25px;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            font-weight: 500;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="header">
-        <div class="header-inner">
-            <div class="logo">公告说明</div>
-            <div class="header-links">
-                <a class="header-link" href="https://feihong64800.github.io" target="_blank">备用网址</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="notice-card">
-            <h1 class="notice-title">这是什么？</h1>
-
-            <div class="notice-content">
-                <p>我们是一个<strong>淘宝商品推荐平台</strong>，所有商品都来自淘宝官方渠道，最终购买也会跳转到淘宝完成交易。</p>
-                <p style="margin-top: 10px;">简单来说：<strong>从淘宝来，到淘宝去</strong>。我们只是帮您筛选出更优质、更划算的商品，让您购物更省心！</p>
-                <p style="margin-top: 10px;">您在我们这里浏览推荐商品，点击购买后会直接跳转到淘宝店铺或商品页面，所有交易流程都在淘宝平台完成，安全有保障。</p>
-            </div>
-        </div>
-
-        <div class="notice-card">
-            <h3 class="notice-subtitle">相比直接在淘宝购买，有哪些好处？</h3>
-
-            <ul class="advantage-list">
-                <li class="advantage-item">
-                    <div class="advantage-icon">✓</div>
-                    <div class="advantage-text">
-                        <h4>精选好物，节省时间</h4>
-                        <p>我们帮您从海量商品中筛选出优质好物，不用自己花大量时间比价、看评价。</p>
-                    </div>
-                </li>
-                <li class="advantage-item">
-                    <div class="advantage-icon">✓</div>
-                    <div class="advantage-text">
-                        <h4>专属优惠，更省钱</h4>
-                        <p>部分商品提供专属优惠券或隐藏优惠，比直接在淘宝搜索购买更划算。</p>
-                    </div>
-                </li>
-                <li class="advantage-item">
-                    <div class="advantage-icon">✓</div>
-                    <div class="advantage-text">
-                        <h4>品质保障，更放心</h4>
-                        <p>推荐的商品都经过严格筛选，好评率高、销量好，降低踩坑概率。</p>
-                    </div>
-                </li>
-                <li class="advantage-item">
-                    <div class="advantage-icon">✓</div>
-                    <div class="advantage-text">
-                        <h4>交易安全，有保障</h4>
-                        <p>所有购买都通过淘宝官方链接完成，享受淘宝的售后保障和七天无理由退换服务。</p>
-                    </div>
-                </li>
-                <li class="advantage-item">
-                    <div class="advantage-icon">✓</div>
-                    <div class="advantage-text">
-                        <h4>每日更新，不错过好物</h4>
-                        <p>持续更新热门商品和限时优惠，让您第一时间发现好物。</p>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        <div class="notice-card">
-            <h3 class="notice-subtitle">备用网址</h3>
-            <div class="notice-content">
-                <p>如果当前网站无法访问，请使用以下备用地址：</p>
-                <div class="backup-url">
-                    <a href="https://feihong648009.github.io"
-                        target="_blank">https://feihong64800.github.io</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="notice-card">
-            <h3 class="notice-subtitle">友情链接</h3>
-            <div class="friend-links">
-             
-                <a class="friend-link" href="https://books.yulinlin.cn" target="_blank">电子书在线阅读</a>
-                <a class="friend-link" href="https://so.yulinlin.cn" target="_blank">网盘搜索</a>
-                <a class="friend-link" href="https://me.yulinlin.cn" target="_blank">网址发布</a>
-                <a class="friend-link" href="https://shop260623877.taobao.com" target="_blank">淘宝店铺</a>
-              
-                <a class="friend-link" href="https://feihong64800.github.io/books"
-                    target="_blank">电子书在线阅读 备用网址</a>
-                <a class="friend-link" href="https://feihong64800.github.io/so"
-                    target="_blank">网盘搜索 备用网址</a>
-                <a class="friend-link" href="https://feihong64800.github.io/me"
-                    target="_blank">网址发布 备用网址</a>
-               
-
-            </div>
-        </div>
-
-        <div class="notice-card" style="text-align: center;">
-            <h3 class="notice-subtitle" style="border-left: none; padding-left: 0;">联系我们</h3>
-            <div class="notice-content">
-                <p style="margin-bottom: 15px;">如有任何疑问或需要帮助，欢迎通过以下方式联系我们：</p>
-                <a href="kefu_client.html" target="_blank" class="contact-btn">在线客服</a>
-                <a href="https://qm.qq.com/q/cv9U0MzxRu" target="_blank" class="contact-btn qq">QQ交谈</a>
-
-            </div>
-        </div>
-
-        <div class="notice-card" style="text-align: center;">
-            <a href="index.html" class="back-btn">返回商品列表</a>
-        </div>
-    </div>
-
-    <div class="footer">
-        <p>© 2026 淘宝客推荐 - 为您精选好物</p>
-    </div>
-</body>
-
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>公告说明</title>
+
+    <style>
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+
+
+        body {
+
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+            min-height: 100vh;
+
+            padding-bottom: 30px;
+
+        }
+
+
+
+        .header {
+
+            background: rgba(255, 255, 255, 0.95);
+
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+            backdrop-filter: blur(10px);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+        }
+
+
+
+        .header-inner {
+
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            padding: 0 15px;
+
+            height: 50px;
+
+            display: flex;
+
+            align-items: center;
+
+        }
+
+
+
+        .logo {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            color: #ff5000;
+
+        }
+
+        
+
+        /* Header 右侧链接 */
+
+        .header-links {
+
+            display: flex;
+
+            gap: 8px;
+
+            margin-left: auto;
+
+        }
+
+        .header-link {
+
+            padding: 6px 14px;
+
+            color: #fff;
+
+            background: #ff5000;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            border-radius: 15px;
+
+            transition: all 0.3s;
+
+            white-space: nowrap;
+
+            font-weight: bold;
+
+        }
+
+        .header-link:hover {
+
+            background: #e04800;
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 2px 8px rgba(255, 80, 0, 0.3);
+
+        }
+
+
+
+        .container {
+
+            max-width: 1200px;
+
+            margin: 15px auto;
+
+            padding: 0 15px;
+
+        }
+
+
+
+        .notice-card {
+
+            background: rgba(255, 255, 255, 0.95);
+
+            border-radius: 16px;
+
+            padding: 30px;
+
+            margin-bottom: 20px;
+
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+
+            backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+
+        }
+
+
+
+        .notice-title {
+
+            font-size: 28px;
+
+            color: #1a1a2e;
+
+            margin-bottom: 20px;
+
+            text-align: center;
+
+            font-weight: bold;
+
+        }
+
+
+
+        .notice-subtitle {
+
+            font-size: 20px;
+
+            color: #1a1a2e;
+
+            margin-bottom: 18px;
+
+            padding-left: 12px;
+
+            border-left: 4px solid #ff5000;
+
+            font-weight: bold;
+
+        }
+
+
+
+        .notice-content {
+
+            font-size: 17px;
+
+            color: #2d2d3a;
+
+            line-height: 2;
+
+            margin-bottom: 15px;
+
+        }
+
+
+
+        .advantage-list {
+
+            list-style: none;
+
+            padding: 0;
+
+        }
+
+
+
+        .advantage-item {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            padding: 15px 18px;
+
+            margin-bottom: 12px;
+
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+
+            border-radius: 12px;
+
+            transition: all 0.3s;
+
+            border: 1px solid #e9ecef;
+
+        }
+
+
+
+        .advantage-item:hover {
+
+            background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
+
+            transform: translateX(5px);
+
+            box-shadow: 0 4px 12px rgba(255, 80, 0, 0.15);
+
+            border-color: #ff5000;
+
+        }
+
+
+
+        .advantage-icon {
+
+            width: 28px;
+
+            height: 28px;
+
+            background: linear-gradient(135deg, #ff5000 0%, #ff7744 100%);
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #fff;
+
+            font-size: 16px;
+
+            margin-right: 15px;
+
+            flex-shrink: 0;
+
+            box-shadow: 0 2px 8px rgba(255, 80, 0, 0.3);
+
+        }
+
+
+
+        .advantage-text {
+
+            flex: 1;
+
+        }
+
+
+
+        .advantage-text h4 {
+
+            font-size: 17px;
+
+            color: #1a1a2e;
+
+            margin-bottom: 6px;
+
+            font-weight: bold;
+
+        }
+
+
+
+        .advantage-text p {
+
+            font-size: 15px;
+
+            color: #4a4a5a;
+
+            line-height: 1.7;
+
+        }
+
+
+
+        .back-btn {
+
+            display: inline-block;
+
+            padding: 12px 30px;
+
+            background: linear-gradient(135deg, #ff5000 0%, #ff7744 100%);
+
+            color: #fff;
+
+            border-radius: 25px;
+
+            text-decoration: none;
+
+            font-size: 16px;
+
+            transition: all 0.3s;
+
+            font-weight: bold;
+
+            box-shadow: 0 4px 12px rgba(255, 80, 0, 0.3);
+
+        }
+
+
+
+        .back-btn:hover {
+
+            background: linear-gradient(135deg, #e04800 0%, #ff5000 100%);
+
+            transform: translateY(-3px);
+
+            box-shadow: 0 6px 16px rgba(255, 80, 0, 0.4);
+
+        }
+
+
+
+        .backup-url {
+
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8d6 100%);
+
+            padding: 18px;
+
+            border-radius: 12px;
+
+            text-align: center;
+
+            margin: 15px 0;
+
+            border: 1px solid #ff5000;
+
+        }
+
+
+
+        .backup-url a {
+
+            color: #ff5000;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            font-size: 17px;
+
+        }
+
+
+
+        .backup-url a:hover {
+
+            text-decoration: underline;
+
+        }
+
+
+
+        .friend-links {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            margin-top: 15px;
+
+        }
+
+
+
+        .friend-link {
+
+            padding: 10px 18px;
+
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+
+            border-radius: 8px;
+
+            color: #2d2d3a;
+
+            text-decoration: none;
+
+            font-size: 15px;
+
+            transition: all 0.3s;
+
+            border: 1px solid #e9ecef;
+
+            font-weight: 500;
+
+        }
+
+
+
+        .friend-link:hover {
+
+            background: linear-gradient(135deg, #ff5000 0%, #ff7744 100%);
+
+            color: #fff;
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 4px 12px rgba(255, 80, 0, 0.3);
+
+            border-color: #ff5000;
+
+        }
+
+
+
+        .contact-btn {
+
+            display: inline-block;
+
+            padding: 12px 30px;
+
+            background: linear-gradient(135deg, #ff5000 0%, #ff7744 100%);
+
+            color: #fff;
+
+            border-radius: 25px;
+
+            text-decoration: none;
+
+            font-size: 16px;
+
+            margin: 5px;
+
+            transition: all 0.3s;
+
+            font-weight: bold;
+
+            box-shadow: 0 4px 12px rgba(255, 80, 0, 0.3);
+
+        }
+
+
+
+        .contact-btn:hover {
+
+            background: linear-gradient(135deg, #e04800 0%, #ff5000 100%);
+
+            transform: translateY(-3px);
+
+            box-shadow: 0 6px 16px rgba(255, 80, 0, 0.4);
+
+        }
+
+
+
+        .contact-btn.qq {
+
+            background: linear-gradient(135deg, #12b7f5 0%, #36c5f0 100%);
+
+            box-shadow: 0 4px 12px rgba(18, 183, 245, 0.3);
+
+        }
+
+
+
+        .contact-btn.qq:hover {
+
+            background: linear-gradient(135deg, #0ea3d9 0%, #12b7f5 100%);
+
+            box-shadow: 0 6px 16px rgba(18, 183, 245, 0.4);
+
+        }
+
+
+
+        .footer {
+
+            text-align: center;
+
+            padding: 25px;
+
+            color: rgba(255, 255, 255, 0.9);
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+        }
+
+    </style>
+
+</head>
+
+
+
+<body>
+
+    <div class="header">
+
+        <div class="header-inner">
+
+            <div class="logo">公告说明</div>
+
+            <div class="header-links">
+
+                <a class="header-link" href="https://feihong64800.github.io" target="_blank">备用网址</a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="container">
+
+        <div class="notice-card">
+
+            <h1 class="notice-title">这是什么？</h1>
+
+
+
+            <div class="notice-content">
+
+                <p>我们是一个<strong>淘宝商品推荐平台</strong>，所有商品都来自淘宝官方渠道，最终购买也会跳转到淘宝完成交易。</p>
+
+                <p style="margin-top: 10px;">简单来说：<strong>从淘宝来，到淘宝去</strong>。我们只是帮您筛选出更优质、更划算的商品，让您购物更省心！</p>
+
+                <p style="margin-top: 10px;">您在我们这里浏览推荐商品，点击购买后会直接跳转到淘宝店铺或商品页面，所有交易流程都在淘宝平台完成，安全有保障。</p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="notice-card">
+
+            <h3 class="notice-subtitle">相比直接在淘宝购买，有哪些好处？</h3>
+
+
+
+            <ul class="advantage-list">
+
+                <li class="advantage-item">
+
+                    <div class="advantage-icon">✓</div>
+
+                    <div class="advantage-text">
+
+                        <h4>精选好物，节省时间</h4>
+
+                        <p>我们帮您从海量商品中筛选出优质好物，不用自己花大量时间比价、看评价。</p>
+
+                    </div>
+
+                </li>
+
+                <li class="advantage-item">
+
+                    <div class="advantage-icon">✓</div>
+
+                    <div class="advantage-text">
+
+                        <h4>专属优惠，更省钱</h4>
+
+                        <p>部分商品提供专属优惠券或隐藏优惠，比直接在淘宝搜索购买更划算。</p>
+
+                    </div>
+
+                </li>
+
+                <li class="advantage-item">
+
+                    <div class="advantage-icon">✓</div>
+
+                    <div class="advantage-text">
+
+                        <h4>品质保障，更放心</h4>
+
+                        <p>推荐的商品都经过严格筛选，好评率高、销量好，降低踩坑概率。</p>
+
+                    </div>
+
+                </li>
+
+                <li class="advantage-item">
+
+                    <div class="advantage-icon">✓</div>
+
+                    <div class="advantage-text">
+
+                        <h4>交易安全，有保障</h4>
+
+                        <p>所有购买都通过淘宝官方链接完成，享受淘宝的售后保障和七天无理由退换服务。</p>
+
+                    </div>
+
+                </li>
+
+                <li class="advantage-item">
+
+                    <div class="advantage-icon">✓</div>
+
+                    <div class="advantage-text">
+
+                        <h4>每日更新，不错过好物</h4>
+
+                        <p>持续更新热门商品和限时优惠，让您第一时间发现好物。</p>
+
+                    </div>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+
+
+        <div class="notice-card">
+
+            <h3 class="notice-subtitle">备用网址</h3>
+
+            <div class="notice-content">
+
+                <p>如果当前网站无法访问，请使用以下备用地址：</p>
+
+                <div class="backup-url">
+
+                    <a href="https://feihong648009.github.io"
+
+                        target="_blank">https://www.yulinlin.cn</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="notice-card">
+
+            <h3 class="notice-subtitle">友情链接</h3>
+
+            <div class="friend-links">
+
+             
+
+                <a class="friend-link" href="https://books.yulinlin.cn" target="_blank">电子书在线阅读</a>
+
+                <a class="friend-link" href="https://so.yulinlin.cn" target="_blank">网盘搜索</a>
+
+                <a class="friend-link" href="https://me.yulinlin.cn" target="_blank">网址发布</a>
+
+                <a class="friend-link" href="https://shop260623877.taobao.com" target="_blank">淘宝店铺</a>
+
+              
+
+                <a class="friend-link" href="https://feihong64800.github.io/books"
+
+                    target="_blank">电子书在线阅读 备用网址</a>
+
+                <a class="friend-link" href="https://feihong64800.github.io/so"
+
+                    target="_blank">网盘搜索 备用网址</a>
+
+                <a class="friend-link" href="https://feihong64800.github.io/me"
+
+                    target="_blank">网址发布 备用网址</a>
+
+               
+
+
+
+            </div>
+
+        </div>
+
+
+
+        <div class="notice-card" style="text-align: center;">
+
+            <h3 class="notice-subtitle" style="border-left: none; padding-left: 0;">联系我们</h3>
+
+            <div class="notice-content">
+
+                <p style="margin-bottom: 15px;">如有任何疑问或需要帮助，欢迎通过以下方式联系我们：</p>
+
+                <a href="kefu_client.html" target="_blank" class="contact-btn">在线客服</a>
+
+                <a href="https://qm.qq.com/q/cv9U0MzxRu" target="_blank" class="contact-btn qq">QQ交谈</a>
+
+
+
+            </div>
+
+        </div>
+
+
+
+        <div class="notice-card" style="text-align: center;">
+
+            <a href="index.html" class="back-btn">返回商品列表</a>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="footer">
+
+        <p>© 2026 淘宝客推荐 - 为您精选好物</p>
+
+    </div>
+
+</body>
+
+
+
 </html>
