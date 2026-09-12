@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>淘宝精选</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; }
+        
+        /* Header */
+        .header {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            height: 50px;
+        }
+        .logo { font-size: 18px; font-weight: bold; color: #ff5000; margin-right: 20px; }
+        
+        /* Header 右侧链接 */
+        .header-links {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+        .header-link {
+            padding: 6px 14px;
+            color: #fff;
+            background: #ff5000;
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 15px;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-weight: bold;
+        }
+        .header-link:hover {
+            background: #e04800;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(255, 80, 0, 0.3);
+        }
+        
+        /* 分类导航 */
+        .nav {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            flex: 1;
+        }
+        .nav::-webkit-scrollbar { display: none; }
+        .nav-item {
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        .nav-item:hover { background: #f0f0f0; }
+        .nav-item.active {
+            background: #ff5000;
+            color: #fff;
+        }
+        
+        /* 商品列表 */
+        .container {
+            max-width: 1200px;
+            margin: 15px auto;
+            padding: 0 15px;
+        }
+        .goods-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .goods-item {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .goods-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        .goods-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        .goods-info { padding: 8px; }
+        .goods-title {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.4;
+            height: 36px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .goods-price {
+            margin-top: 6px;
+            color: #ff5000;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .goods-category {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #999;
+        }
+        .goods-actions {
+            margin-top: 8px;
+            display: flex;
+            gap: 5px;
+        }
+        .btn-copy {
+            flex: 1;
+            padding: 4px 8px;
+            background: #ff5000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .btn-buy {
+            flex: 1;
+            padding: 4px 8px;
+            background: #ff5000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        /* 加载中 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 0;
+        }
+        .pagination button {
+            padding: 8px 14px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .pagination button:hover:not(:disabled) {
+            background: #ff5000;
+            color: #fff;
+            border-color: #ff5000;
+        }
+        .pagination button.active {
+            background: #ff5000;
+            color: #fff;
+            border-color: #ff5000;
+        }
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pagination .info {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-inner">
+            <div class="logo">淘宝精选</div>
+            <div class="nav" id="nav">
+                <div class="nav-item active" data-cat="all">全部</div>
+            </div>
+            <div class="header-links">
+                <a class="header-link" href="so.html" target="_blank">搜索</a>
+                <a class="header-link" href="notice.html" target="_blank">公告</a>
+                <a class="header-link" href="kefu_client.html" target="_blank">客服</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="goods-list" id="goodsList">
+            <div class="loading">加载中...</div>
+        </div>
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <script src="./public/config.js"></script>
+    <script>
+        let currentPage = 1;
+        let currentCategory = 'all';
+        let totalPages = 0;
+        
+        // 获取分类
+        async function loadCategories() {
+            try {
+                const res = await fetch(`${CONFIG.BASE_URL}/taobaoke/show.php`);
+                const data = await res.json();
+                
+                if (data.success) {
+                    const nav = document.getElementById('nav');
+                    data.categories.forEach(cat => {
+                        nav.innerHTML += `<div class="nav-item" data-cat="${cat.category}">${cat.category}</div>`;
+                    });
+                    
+                    nav.querySelectorAll('.nav-item').forEach(item => {
+                        item.onclick = () => {
+                            nav.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                            item.classList.add('active');
+                            currentCategory = item.dataset.cat;
+                            currentPage = 1;
+                            loadGoods();
+                        };
+                    });
+                }
+            } catch (err) {
+                console.error('加载分类失败:', err);
+            }
+        }
+        
+        // 获取商品
+        async function loadGoods() {
+            try {
+                document.getElementById('goodsList').innerHTML = '<div class="loading">加载中...</div>';
+                document.getElementById('pagination').innerHTML = '';
+                
+                let url = `${CONFIG.BASE_URL}/taobaoke/goods.php?page=${currentPage}`;
+                if (currentCategory !== 'all') {
+                    url += `&category=${encodeURIComponent(currentCategory)}`;
+                }
+                
+                const res = await fetch(url);
+                const data = await res.json();
+                
+                if (data.success) {
+                    renderGoods(data.goods);
+                    totalPages = data.pages;
+                    renderPagination(data.page, data.pages, data.total);
+                }
+            } catch (err) {
+                console.error('加载商品失败:', err);
+                document.getElementById('goodsList').innerHTML = '<div class="loading">加载失败</div>';
+            }
+        }
+        
+        // 渲染商品
+        function renderGoods(goods) {
+            const list = document.getElementById('goodsList');
+            if (goods.length === 0) {
+                list.innerHTML = '<div class="loading">暂无商品</div>';
+                return;
+            }
+            
+            let html = '';
+            for (let i = 0; i < goods.length; i += 4) {
+                const row = goods.slice(i, i + 4);
+                html += '<div class="row">';
+                row.forEach(item => {
+                    if (item.short_link) {
+                        html += `
+                        <div class="goods-item">
+                            <img class="goods-img" src="${item.img || 'https://via.placeholder.com/160'}" alt="${item.title}">
+                            <div class="goods-info">
+                                <div class="goods-title">${item.title}</div>
+                                <div class="goods-price">${item.price}</div>
+                                <div class="goods-category">${item.category}</div>
+                                <div class="goods-actions">
+                                    <button class="btn-copy" onclick="copyTkl('${item.taokouling || ''}')">复制淘口令</button>
+                                    <a class="btn-buy" href="${item.short_link || '#'}" target="_blank">去淘宝店铺购买</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    }
+                });
+                html += '</div>';
+            }
+            
+            list.innerHTML = html;
+        }
+        
+        // 渲染分页
+        function renderPagination(page, pages, total) {
+            if (pages <= 1) return;
+            
+            let html = `<button onclick="goPage(${page - 1})" ${page === 1 ? 'disabled' : ''}>上一页</button>`;
+            
+            // 显示页码
+            let start = Math.max(1, page - 2);
+            let end = Math.min(pages, page + 2);
+            
+            if (start > 1) {
+                html += `<button onclick="goPage(1)">1</button>`;
+                if (start > 2) html += `<span class="info">...</span>`;
+            }
+            
+            for (let i = start; i <= end; i++) {
+                html += `<button class="${i === page ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+            }
+            
+            if (end < pages) {
+                if (end < pages - 1) html += `<span class="info">...</span>`;
+                html += `<button onclick="goPage(${pages})">${pages}</button>`;
+            }
+            
+            html += `<button onclick="goPage(${page + 1})" ${page === pages ? 'disabled' : ''}>下一页</button>`;
+            html += `<span class="info">共${total}条</span>`;
+            
+            document.getElementById('pagination').innerHTML = html;
+        }
+        
+        // 翻页
+        function goPage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            loadGoods();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // 复制淘口令
+        function copyTkl(tkl) {
+            if (!tkl) {
+                alert('暂无淘口令');
+                return;
+            }
+            navigator.clipboard.writeText(tkl).then(() => {
+                alert('淘口令已复制');
+            }).catch(() => {
+                const input = document.createElement('input');
+                input.value = tkl;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert('淘口令已复制');
+            });
+        }
+        
+        // 初始化
+        fetch(CONFIG.BASE_URL + '/model/stats.php?name=' + encodeURIComponent('淘宝客网站'));
+        loadCategories();
+        loadGoods();
+    </script>
+</body>
+</html>
