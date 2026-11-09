@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>在线客服 - 淘宝精选</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 60px;
+        }
+        
+        /* Header */
+        .chat-header {
+            background: #ff5000;
+            color: #fff;
+            padding: 12px 15px;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .chat-header .back-btn {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+        }
+        .chat-header .title {
+            flex: 1;
+            text-align: center;
+        }
+        .chat-header .placeholder {
+            width: 60px;
+        }
+        
+        /* 消息区域 */
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .msg {
+            margin: 6px 0;
+            padding: 10px 14px;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .msg-user {
+            background: #95ec69;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        .msg-kefu {
+            background: #fff;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        /* 输入区域 */
+        #inputArea {
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #eee;
+            background: #fff;
+            flex-shrink: 0;
+        }
+        #msgInput {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            font-size: 15px;
+        }
+        #msgInput:focus {
+            border-color: #ff5000;
+        }
+        #inputArea button {
+            padding: 10px 20px;
+            background: #ff5000;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+        #inputArea button:active {
+            background: #e64a00;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 100;
+        }
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 11px;
+            padding: 4px 12px;
+        }
+        .nav-btn.active {
+            color: #ff5000;
+        }
+        .nav-btn-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-header">
+        <a href="index.html" class="back-btn">← 首页</a>
+        <span class="title">在线客服</span>
+        <span class="placeholder"></span>
+    </div>
+    
+    <div id="messages"></div>
+    
+    <div id="inputArea">
+        <input type="text" id="msgInput" placeholder="输入消息..." onkeydown="if(event.key==='Enter')sendMsg()">
+        <button onclick="sendMsg()">发送</button>
+    </div>
+
+    <div class="bottom-nav">
+        <a class="nav-btn" href="index.html">
+            <div class="nav-btn-icon">🏠</div>
+            <div>首页</div>
+        </a>
+        <a class="nav-btn" href="so.html">
+            <div class="nav-btn-icon">🔍</div>
+            <div>搜索</div>
+        </a>
+        <a class="nav-btn" href="notice.html">
+            <div class="nav-btn-icon">📢</div>
+            <div>公告</div>
+        </a>
+        <a class="nav-btn active" href="kefu_client.html">
+            <div class="nav-btn-icon">💬</div>
+            <div>客服</div>
+        </a>
+    </div>
+
+    <script src="./public/config.js"></script>
+    <script>
+        let line = 0;
+        let clientId = localStorage.getItem('clientId');
+        if (!clientId) {
+            clientId = 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            localStorage.setItem('clientId', clientId);
+        }
+        let lastRevLine = 0;
+
+        function sendMsg() {
+            const input = document.getElementById('msgInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            line = line + 1;
+            const data = {client_id: clientId, msg: msg, line: line};
+
+            const div = document.createElement('div');
+            div.className = 'msg msg-user';
+            div.textContent = msg;
+            document.getElementById('messages').appendChild(div);
+
+            fetch(CONFIG.BASE_URL + '/model/kefu/client_write.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(data => {
+                lastRevLine = data.count;
+            })
+            .catch(err => {
+                console.error('发送消息失败:', err);
+            });
+
+            input.value = '';
+        }
+
+        // 轮询读取服务端回复
+        function pollReply() {
+            console.log('轮询请求:', CONFIG.BASE_URL + '/model/kefu/client_rev.php?client_id=' + clientId);
+            fetch(CONFIG.BASE_URL + '/model/kefu/client_rev.php?client_id=' + clientId)
+                .then(res => {
+                    console.log('轮询响应状态:', res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    console.log('轮询响应数据:', data);
+                    console.log('data.length:', data.length, 'lastRevLine:', lastRevLine);
+                    console.log('data[0]:', data[0]);
+                    if (data.length > lastRevLine) {
+                        // 有新回复
+                        const div = document.getElementById('messages');
+                        for (let i = lastRevLine; i < data.length; i++) {
+                            const msgDiv = document.createElement('div');
+                            msgDiv.className = 'msg';
+                            if (data[i].msg.startsWith('客服:')) {
+                                msgDiv.classList.add('msg-kefu');
+                            } else {
+                                msgDiv.classList.add('msg-user');
+                            }
+                            msgDiv.textContent = data[i].msg;
+                            div.appendChild(msgDiv);
+                        }
+                        lastRevLine = data.length;
+                        div.scrollTop = div.scrollHeight;
+                    }
+                })
+                .catch(err => {
+                    console.error('轮询失败:', err);
+                });
+        }
+
+        // 每 3 秒轮询一次
+        setInterval(pollReply, 3000);
+    </script>
+</body>
+</html>

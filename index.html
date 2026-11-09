@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+
+    <title>跳转中...</title>
+
+</head>
+
+<body>
+
+    <script>
+
+        // 入口页只做一件事：拼好 name 用 URL 传给落地页，由落地页上报
+        // 入口页自己不发请求，页面马上跳走，请求容易被网速拖住
+
+        function isMobile() {
+            if (navigator.userAgentData && typeof navigator.userAgentData.mobile === 'boolean') {
+                return navigator.userAgentData.mobile;
+            }
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent);
+        }
+
+        function getVisitSrc() {
+            try {
+                return document.referrer ? new URL(document.referrer).hostname.toLowerCase() : '直接输入';
+            } catch (e) {
+                return '异常referrer';
+            }
+        }
+
+        function getShareDomain(host) {
+            if (!host) {
+                return '';
+            }
+            if (/^[0-9.]+$/.test(host) || host === 'localhost') {
+                return host;
+            }
+            var parts = host.split('.');
+            if (parts.length < 2) {
+                return host;
+            }
+            if (host.slice(-10) === '.github.io') {
+                return host;
+            }
+            return parts.slice(1).join('.');
+        }
+
+        function getVisitType() {
+            var key = 'yulinlin_visited';
+            var m = document.cookie.match(new RegExp('(?:^|; )' + key + '=([^;]*)'));
+
+            if (m && m[1]) {
+                return m[1];
+            }
+
+            var token = 'yulinlin' + Math.random().toString(36).slice(2, 8);
+            var domain = getShareDomain(location.hostname);
+
+            document.cookie = key + '=' + token + '; path=/; domain=' + domain + '; max-age=31536000; SameSite=Lax';
+
+            return 'new:' + token;
+        }
+
+        var name = '淘客入口|' + getVisitSrc() + '|' + getVisitType() + '|' + (isMobile() ? '手机' : '电脑');
+        var qs = '?name=' + encodeURIComponent(name);
+
+        if (isMobile()) {
+            window.location.href = './mobile/index.html' + qs;
+        } else {
+            window.location.href = './wangye/index.html' + qs;
+        }
+
+    </script>
+
+</body>
+
+</html>

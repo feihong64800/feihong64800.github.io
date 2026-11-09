@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>访问统计测试</title>
+    <script src="./public/config.js"></script>
+    <script src="./public/reportvisit_stats.js"></script>
+</head>
+<body>
+    <p>正在上报访问统计，然后跳转百度……</p>
+
+    <script>
+        // 上报完成后跳转，保证 cookie 和请求先发出
+        reportVisit('测试页面');
+
+       
+         window.location.href = 'https://www.baidu.com';
+
+    </script>
+</body>
+</html>
